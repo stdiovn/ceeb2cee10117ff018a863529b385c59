@@ -270,8 +270,15 @@ namespace stdio_fw
 		m_drawColor[0] = ((color >> 24) & 0xFF) / 255.0f;
 		m_drawColor[1] = ((color >> 16) & 0xFF) / 255.0f;
 		m_drawColor[2] = ((color >> 8) & 0xFF) / 255.0f;
-		m_drawColor[3] = (color & 0xFF) / 255.0f;
-		
+		m_drawColor[3] = (color & 0xFF) / 255.0f;		
+	}
+
+	void Graphics::setColor(int red, int green, int blue, int alpha)
+	{
+		m_drawColor[0] = red / 255.0f;
+		m_drawColor[1] = green / 255.0f;
+		m_drawColor[2] = blue / 255.0f;
+		m_drawColor[3] = alpha / 255.0f;
 	}
 
 	void Graphics::setClearColor(unsigned int color)
@@ -281,6 +288,14 @@ namespace stdio_fw
 		m_clearColor[1] = ((color >> 16) & 0xFF) / 255.0f;
 		m_clearColor[2] = ((color >> 8) & 0xFF) / 255.0f;
 		m_clearColor[3] = 1.0f;
+	}
+
+	void Graphics::setClearColor(int red, int green, int blue, int alpha)
+	{
+		m_clearColor[0] = red / 255.0f;
+		m_clearColor[1] = green / 255.0f;
+		m_clearColor[2] = blue / 255.0f;
+		m_clearColor[3] = alpha / 255.0f;
 	}
 
 	void Graphics::cleanScreen()
