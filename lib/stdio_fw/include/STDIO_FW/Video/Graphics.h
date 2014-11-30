@@ -58,7 +58,10 @@ namespace stdio_fw
 
 		// Set color function: 0xRRGGBBAA
 		void				setColor(unsigned int color);
+		void				setColor(int red, int green, int blue, int alpha);
+		
 		void				setClearColor(unsigned int color);
+		void				setClearColor(int red, int green, int blue, int alpha);
 
 		void				cleanScreen();	
 
