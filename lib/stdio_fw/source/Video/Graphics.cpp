@@ -9,7 +9,7 @@ namespace stdio_fw
 	GLuint createProgram(const char* vertex_src, const char* fragment_src);
 	GLuint loadShader(GLenum type, const char* src);
 
-	Graphics::Graphics()
+	Graphics::Graphics() :m_curFont(nullptr)
 	{
 
 	}
@@ -40,17 +40,16 @@ namespace stdio_fw
 			"gl_FragColor = u_color;\n"
 			"}\n";
 
-		m_aPrograms[0] = createProgram(solid_obj_vertex_shader_src, solid_obj_fragment_shader_src);
+		m_aPrograms[PRG_SOL] = createProgram(solid_obj_vertex_shader_src, solid_obj_fragment_shader_src);
 
-		m_cachedLocs[CACHED_LOC::ATRIB_POSITION0] = glGetAttribLocation(m_aPrograms[0], "a_pos");		
-		m_cachedLocs[CACHED_LOC::UNIFO_COLOR] = glGetUniformLocation(m_aPrograms[0], "u_color");
+		m_cachedLocs[CACHED_LOC::ATT_POSITION0] = glGetAttribLocation(m_aPrograms[PRG_SOL], "a_pos");		
+		m_cachedLocs[CACHED_LOC::UNI_COLOR0] = glGetUniformLocation(m_aPrograms[PRG_SOL], "u_color");
 
 		// For image
 		const char* img_vertex_shader_src =
 			"#version 120\n"
 			"attribute vec2 a_pos;\n"
-			"attribute vec2 a_uv;\n"
-			"uniform mat3 u_mat;\n"
+			"attribute vec2 a_uv;\n"			
 			"varying vec2 v_uv;\n"
 			"void main()\n"
 			"{\n"
@@ -67,11 +66,40 @@ namespace stdio_fw
 			"gl_FragColor = texture2D(u_tex, v_uv);\n"
 			"}\n";
 
-		m_aPrograms[1] = createProgram(img_vertex_shader_src, img_fragment_shader_src);
+		m_aPrograms[PRG_IMG] = createProgram(img_vertex_shader_src, img_fragment_shader_src);
 		
-		m_cachedLocs[CACHED_LOC::ATRIB_POSITION1] = glGetAttribLocation(m_aPrograms[1], "a_pos");		
-		m_cachedLocs[CACHED_LOC::ATRIB_TEXCOORD] = glGetAttribLocation(m_aPrograms[1], "a_uv");
-		m_cachedLocs[CACHED_LOC::UNIFO_TEXTURE] = glGetUniformLocation(m_aPrograms[1], "u_tex");
+		m_cachedLocs[CACHED_LOC::ATT_POSITION1] = glGetAttribLocation(m_aPrograms[PRG_IMG], "a_pos");		
+		m_cachedLocs[CACHED_LOC::ATT_TEXCOORD1] = glGetAttribLocation(m_aPrograms[PRG_IMG], "a_uv");
+		m_cachedLocs[CACHED_LOC::UNI_TEXTURE1] = glGetUniformLocation(m_aPrograms[PRG_IMG], "u_tex");
+
+		// For text rendering
+		const char* font_vertex_shader_src =
+			"#version 120\n"
+			"attribute vec2 a_pos;\n"
+			"attribute vec2 a_uv;\n"			
+			"varying vec2 v_uv;\n"
+			"void main()\n"
+			"{\n"
+			"gl_Position = vec4(a_pos, 1.0, 1.0);\n"
+			"v_uv = a_uv;\n"
+			"}\n";
+
+		const char* font_fragment_shader_src =
+			"#version 120\n"
+			"uniform sampler2D u_tex;\n"
+			"uniform vec4 u_color;\n"
+			"varying vec2 v_uv;\n"
+			"void main()\n"
+			"{\n"
+			"gl_FragColor = u_color * vec4(1.0, 1.0, 1.0, texture2D(u_tex, v_uv).a);\n"
+			"}\n";
+
+		m_aPrograms[PRG_FON] = createProgram(font_vertex_shader_src, font_fragment_shader_src);
+
+		m_cachedLocs[CACHED_LOC::ATT_POSITION2] = glGetAttribLocation(m_aPrograms[PRG_FON], "a_pos");
+		m_cachedLocs[CACHED_LOC::ATT_TEXCOORD2] = glGetAttribLocation(m_aPrograms[PRG_FON], "a_uv");
+		m_cachedLocs[CACHED_LOC::UNI_TEXTURE2] = glGetUniformLocation(m_aPrograms[PRG_FON], "u_tex");
+		m_cachedLocs[CACHED_LOC::UNI_COLOR2] = glGetUniformLocation(m_aPrograms[PRG_FON], "u_color");
 
 		return ErrorCode::ERR_NO_ERROR;
 	}
@@ -140,17 +168,17 @@ namespace stdio_fw
 			XSCREEN2GL(x2, m_iScreenW), YSCREEN2GL(y2, m_iScreenH)
 		};
 		
-		glUseProgram(m_aPrograms[0]);
+		glUseProgram(m_aPrograms[PRG_SOL]);
 
 		// Transfer data to verties
-		GLint posLoc = m_cachedLocs[CACHED_LOC::ATRIB_POSITION0];
+		GLint posLoc = m_cachedLocs[CACHED_LOC::ATT_POSITION0];
 		if (posLoc != -1)
 		{
 			glVertexAttribPointer(posLoc, 2, GL_FLOAT, GL_FALSE, 0, vertices);
 			glEnableVertexAttribArray(posLoc);
 		}
 
-		GLint colorUniLoc = m_cachedLocs[CACHED_LOC::UNIFO_COLOR];
+		GLint colorUniLoc = m_cachedLocs[CACHED_LOC::UNI_COLOR0];
 		if (colorUniLoc != -1)
 		{
 			glUniform4fv(colorUniLoc, 1, &m_drawColor[0]);
@@ -164,11 +192,97 @@ namespace stdio_fw
 		drawLine(p1.x, p1.y, p2.x, p2.y);
 	}
 
+	void Graphics::drawText(const char* text, int x, int y, int scale_x, int scale_y)
+	{
+		if (!m_curFont)
+			return;
+
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+		glUseProgram(m_aPrograms[CACHED_PROGRAM::PRG_FON]);
+
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+		// Active texture
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, Font::m_texID);
+		glUniform1i(m_cachedLocs[CACHED_LOC::UNI_TEXTURE2], 0);
+
+		// Transfer color					
+		glUniform4fv(m_cachedLocs[CACHED_LOC::UNI_COLOR2], 1, &m_drawColor[0]);
+
+		// Transfer uv
+		GLint uvLoc = m_cachedLocs[CACHED_LOC::ATT_TEXCOORD1];
+		float default_uv[] = {
+			0.0f, 0.0f,
+			1.0f, 0.0f,
+			0.0f, 1.0f,
+			1.0f, 1.0f,			
+		};
+
+		glVertexAttribPointer(uvLoc, 2, GL_FLOAT, GL_FALSE, 0, default_uv);
+		glEnableVertexAttribArray(uvLoc);
+		
+		// Draw individual character
+		for (const char* p = text; *p; p++)
+		{
+			if (FT_Load_Char(m_curFont->m_face, *p, FT_LOAD_RENDER))
+				continue;
+
+			FT_GlyphSlot gs = m_curFont->m_face->glyph;
+
+			// Tranfer texture
+			glTexImage2D(
+				GL_TEXTURE_2D,
+				0,
+				GL_ALPHA,
+				gs->bitmap.width,
+				gs->bitmap.rows,
+				0,
+				GL_ALPHA,
+				GL_UNSIGNED_BYTE,
+				gs->bitmap.buffer
+				);
+
+			float px = x + gs->bitmap_left * scale_x;
+			float py = y - gs->bitmap_top * scale_x;
+			float w = gs->bitmap.width * scale_x;
+			float h = gs->bitmap.rows * scale_y;
+
+			// Compute vertices array
+			float vertices[] = {
+				XSCREEN2GL(px, m_iScreenW),		YSCREEN2GL(py, m_iScreenH),
+				XSCREEN2GL(px + w, m_iScreenW), YSCREEN2GL(py, m_iScreenH),
+				XSCREEN2GL(px, m_iScreenW),		YSCREEN2GL(py + h, m_iScreenH),
+				XSCREEN2GL(px + w, m_iScreenW), YSCREEN2GL(py + h, m_iScreenH)
+			};
+
+			// Transfer data to verties
+			GLint posLoc = m_cachedLocs[CACHED_LOC::ATT_POSITION2];			
+			glVertexAttribPointer(posLoc, 2, GL_FLOAT, GL_FALSE, 0, vertices);
+			glEnableVertexAttribArray(posLoc);			
+
+			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+			x += (gs->advance.x >> 6) * scale_x;
+			y += (gs->advance.y >> 6) * scale_y;
+		}
+
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+		glUseProgram(0);
+		glDisable(GL_BLEND);
+	}
+
 	void Graphics::draw(int x, int y, int width, int height, float *uv, unsigned int texture_id, unsigned int flipping)
 	{
 		//enable blend
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+		// Active the corresponding programe
+		GLint activeProgram = texture_id == 0 ? m_aPrograms[PRG_SOL] : m_aPrograms[PRG_IMG];
+		glUseProgram(activeProgram);
 
 		// Compute vertices value
 		Vec3 v1(x, y, 1.0f);
@@ -202,31 +316,29 @@ namespace stdio_fw
 			XSCREEN2GL(v2.x, m_iScreenW), YSCREEN2GL(v2.y, m_iScreenH)
 		};
 
-		GLint activeProgram = 0;
-		if (texture_id <= 0)	// We draw solid object
-			activeProgram = m_aPrograms[0];
-		else
-		{
-			activeProgram = m_aPrograms[1];
-
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, texture_id);
-			glUniform1i(m_cachedLocs[CACHED_LOC::UNIFO_TEXTURE], 0);
-		}
-		
-		glUseProgram(activeProgram);
-
 		// Transfer data to verties
-		GLint posLoc = texture_id == 0 ? m_cachedLocs[CACHED_LOC::ATRIB_POSITION0] : m_cachedLocs[CACHED_LOC::ATRIB_POSITION1];
+		GLint posLoc = texture_id == 0 ? m_cachedLocs[CACHED_LOC::ATT_POSITION0] :
+			m_cachedLocs[CACHED_LOC::ATT_POSITION1];
 		if (posLoc != -1)
 		{
 			glVertexAttribPointer(posLoc, 2, GL_FLOAT, GL_FALSE, 0, vertices);
 			glEnableVertexAttribArray(posLoc);
 		}
-
-		GLint uvLoc = m_cachedLocs[CACHED_LOC::ATRIB_TEXCOORD];
-		if (uvLoc != -1)
+		
+		if (texture_id == 0)	// We draw solid object
 		{
+			activeProgram = m_aPrograms[PRG_SOL];
+			// Transfer color			
+			glUniform4fv(m_cachedLocs[CACHED_LOC::UNI_COLOR0], 1, &m_drawColor[0]);
+		}			
+		else
+		{
+			// Bind texture and send uv coordinates
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, texture_id);
+			glUniform1i(m_cachedLocs[CACHED_LOC::UNI_TEXTURE1], 0);			
+
+			GLint uvLoc = m_cachedLocs[CACHED_LOC::ATT_TEXCOORD1];			
 			float default_uv[] = {
 				0.0f, 1.0f,
 				0.0f, 0.0f,
@@ -235,6 +347,7 @@ namespace stdio_fw
 				1.0f, 0.0f,
 				1.0f, 1.0f
 			};
+
 			if (uv == nullptr)
 				uv = default_uv;
 
@@ -242,26 +355,21 @@ namespace stdio_fw
 			{
 				if (flipping & FLIP_X)
 					uv[i] -= 1.0f;
-				
+
 				if (flipping & FLIP_Y)
-					uv[i+1] -= 1.0f;
+					uv[i + 1] -= 1.0f;
 			}
 
 			glVertexAttribPointer(uvLoc, 2, GL_FLOAT, GL_FALSE, 0, uv);
-			glEnableVertexAttribArray(uvLoc);
-		}
-
-		// Transfer uniform
-		GLint colorUniLoc = m_cachedLocs[CACHED_LOC::UNIFO_COLOR];
-		if (colorUniLoc != -1)
-		{
-			glUniform4fv(colorUniLoc, 1, &m_drawColor[0]);
-		}		
-
+			glEnableVertexAttribArray(uvLoc);			
+		}	
+		
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 
 		// Disable blend
 		glDisable(GL_BLEND);
+		glUseProgram(0);
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 	void Graphics::setColor(unsigned int color)
@@ -312,6 +420,12 @@ namespace stdio_fw
 	void Graphics::popMatrix()
 	{
 		m_listMat.clear();
+	}
+
+	void Graphics::setFont(Font* font)
+	{
+		if (font)
+			m_curFont = font;
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////

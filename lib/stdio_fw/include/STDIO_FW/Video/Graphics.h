@@ -7,24 +7,39 @@ namespace stdio_fw
 	enum CACHED_LOC
 	{		
 		// Solid object
-		ATRIB_POSITION0 = 0,		
-		UNIFO_COLOR,
+		ATT_POSITION0 = 0,		
+		UNI_COLOR0,
 		// Image
-		ATRIB_POSITION1,
-		ATRIB_TEXCOORD,
-		UNIFO_TEXTURE,
+		ATT_POSITION1,
+		ATT_TEXCOORD1,
+		UNI_TEXTURE1,
+		// Font render
+		ATT_POSITION2,
+		ATT_TEXCOORD2,
+		UNI_COLOR2,
+		UNI_TEXTURE2,
+
 		// Max cached loc
-		MAX_LOC
+		TOTAL_LOC
+	};
+
+	enum CACHED_PROGRAM
+	{
+		PRG_SOL = 0,
+		PRG_IMG,
+		PRG_FON,
+		TOTAL_PRG
 	};
 
 	class Image;
+	class Font;
 	class Graphics
 	{
 		// We use 2 program: 0 for SOLID OBJECT and 1 for IMAGE
-		unsigned int		m_aPrograms[2];
+		unsigned int		m_aPrograms[TOTAL_PRG];
 
 		// Cache attribute and uniforms location here
-		int					m_cachedLocs[MAX_LOC];
+		int					m_cachedLocs[TOTAL_LOC];
 
 
 		float				m_drawColor[4];
@@ -34,6 +49,8 @@ namespace stdio_fw
 		int					m_iScreenH;
 
 		std::list<Mat3>		m_listMat;
+
+		Font*				m_curFont;
 	public:
 		Graphics();
 		~Graphics();
@@ -56,6 +73,8 @@ namespace stdio_fw
 		void				drawRegion(Image* img, int x, int y, int width, int height, int src_x, int src_y, int src_w, int src_h, unsigned int flipping);
 		void				drawRegion(Image* img, Rect src, Rect dest, unsigned int flipping = 0);
 
+		void				drawText(const char* text, int x, int y, int scale_x = 1, int scale_y = 1);
+
 		// Set color function: 0xRRGGBBAA
 		void				setColor(unsigned int color);
 		void				setColor(int red, int green, int blue, int alpha);
@@ -68,6 +87,9 @@ namespace stdio_fw
 		// Push and pop matrix
 		void				pushMatrix(Mat3 mat);
 		void				popMatrix();
+
+		// Set font
+		void				setFont(Font* font);
 
 	private:
 		void				draw(int x, int y, int width, int height, float *uv = nullptr, unsigned int texture_id = 0, unsigned int flipping = 0);

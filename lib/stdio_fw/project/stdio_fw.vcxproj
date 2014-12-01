@@ -49,6 +49,7 @@
       <AdditionalIncludeDirectories>$(ProjectDir)..\include\STDIO_FW\;$(ProjectDir)..\..\glew\include\;$(ProjectDir)..\..\glfw3\include\;$(ProjectDir)..\..\vld\include\;$(ProjectDir)..\..\FreeImage\;$(ProjectDir)..\..\FreeType\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdio_fw.h</PrecompiledHeaderFile>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

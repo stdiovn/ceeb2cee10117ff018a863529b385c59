@@ -37,6 +37,7 @@ namespace stdio_fw
 		// [in] Key code
 		// [out] State of key
 		KeyState			getKeyState(KeyCode key);
+		Graphics*			getGraphics();
 
 		void				Run();
 	};

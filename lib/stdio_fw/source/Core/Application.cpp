@@ -59,6 +59,12 @@ namespace stdio_fw
 		return glfwGetKey(m_pWindow, key) == GLFW_PRESS ? KeyState::KEY_PRESSED : KeyState::KEY_RELEASED;
 	}
 
+	Graphics* Application::getGraphics()
+	{
+		return m_pGraphics;
+	}
+
+
 	void Application::Run()
 	{
 		DWORD lastTime = GetTickCount();
