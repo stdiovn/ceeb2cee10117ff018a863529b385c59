@@ -16,3 +16,4 @@
 #include "Core\Application.h"
 #include "Video\Graphics.h"
 #include "Video\Image.h"
+#include "Video\Font.h"
