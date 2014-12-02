@@ -70,7 +70,7 @@ namespace stdio_fw
 		void				drawImage(Image* img, int x, int y, unsigned int flipping = 0);
 		void				drawImage(Image* img, Rect rect, unsigned int flipping = 0);
 
-		void				drawRegion(Image* img, int x, int y, int width, int height, int src_x, int src_y, int src_w, int src_h, unsigned int flipping);
+		void				drawRegion(Image* img, int x, int y, int width, int height, int src_x, int src_y, int src_w, int src_h, unsigned int flipping = 0);
 		void				drawRegion(Image* img, Rect src, Rect dest, unsigned int flipping = 0);
 
 		void				drawText(const char* text, int x, int y, int scale_x = 1, int scale_y = 1);
