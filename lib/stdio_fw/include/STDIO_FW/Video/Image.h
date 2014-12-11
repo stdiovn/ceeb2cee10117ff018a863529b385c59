@@ -10,6 +10,7 @@ namespace stdio_fw
 
 		unsigned int		m_imgWidth;
 		unsigned int		m_imgHeight;
+		unsigned int		m_imgBPP;
 
 		bool				m_isLoaded;
 
