@@ -29,8 +29,15 @@ namespace stdio_fw
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 
+		
+		/* Compute window rectangle dimensions based on requested client area dimensions. */
+		RECT R = { 0, 0, screenW, screenH };
+		AdjustWindowRect(&R, WS_OVERLAPPEDWINDOW, false);
+		int width = R.right - R.left;
+		int height = R.bottom - R.top;
+
 		/* Create a windowed mode window and its OpenGL context */
-		m_pWindow = glfwCreateWindow(screenW, screenH, title, NULL, NULL);
+		m_pWindow = glfwCreateWindow(width, height, title, NULL, NULL);
 		if (!m_pWindow)
 		{
 			SHOW_ERROR_MSG("Failed to open GLFW window\n");

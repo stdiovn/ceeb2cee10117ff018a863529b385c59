@@ -91,6 +91,10 @@ namespace stdio_fw
 		// Set font
 		void				setFont(Font* font);
 
+		// Get client width and height
+		int					getClientWidth();
+		int					getClientHeight();
+
 	private:
 		void				draw(int x, int y, int width, int height, float *uv = nullptr, unsigned int texture_id = 0, unsigned int flipping = 0);
 	};

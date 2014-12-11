@@ -428,6 +428,16 @@ namespace stdio_fw
 			m_curFont = font;
 	}
 
+	int Graphics::getClientWidth()
+	{
+		return m_iScreenW;
+	}
+
+	int Graphics::getClientHeight()
+	{
+		return m_iScreenH;
+	}
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	GLuint loadShader(GLenum type, const char* src)
 	{
