@@ -30,6 +30,7 @@
     <ClInclude Include="..\include\STDIO_FW\Utils\stdio_math.h">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\STDIO_FW\types.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\Core\Application.cpp">

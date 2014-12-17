@@ -6,7 +6,7 @@
 namespace stdio_fw
 {
 	FT_Library Font::m_sFTlib = nullptr;
-	unsigned int Font::m_texID = 0;
+	uint Font::m_texID = 0;
 
 	ErrorCode Font::initFontLib()
 	{

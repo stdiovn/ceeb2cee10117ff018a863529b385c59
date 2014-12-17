@@ -74,6 +74,7 @@
     <ClInclude Include="..\include\STDIO_FW\defined.h" />
     <ClInclude Include="..\include\STDIO_FW\stdio_fw.h" />
     <ClInclude Include="..\include\STDIO_FW\macros.h" />
+    <ClInclude Include="..\include\STDIO_FW\types.h" />
     <ClInclude Include="..\include\STDIO_FW\Utils\stdio_math.h" />
     <ClInclude Include="..\include\STDIO_FW\Video\Font.h" />
     <ClInclude Include="..\include\STDIO_FW\Video\Graphics.h" />

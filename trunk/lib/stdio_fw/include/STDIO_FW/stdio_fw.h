@@ -11,6 +11,7 @@
 
 #include "macros.h"
 #include "defined.h"
+#include "types.h"
 
 #include "Utils\stdio_math.h"
 #include "Core\Application.h"

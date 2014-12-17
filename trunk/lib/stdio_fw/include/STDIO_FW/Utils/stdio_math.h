@@ -27,7 +27,7 @@ namespace stdio_fw
 		float Dot(const Vec2 & Vec);
 
 		//access to elements
-		float operator [] (unsigned int idx);
+		float operator [] (uint idx);
 
 		//data members
 		float x;
@@ -61,7 +61,7 @@ namespace stdio_fw
 		Vec3 Cross(const Vec3 & Vec);
 
 		// access to elements
-		float operator [] (unsigned int idx);
+		float operator [] (uint idx);
 
 		//matrix multiplication
 		Vec3 operator * (const Mat3 & m);

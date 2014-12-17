@@ -81,7 +81,7 @@ namespace stdio_fw
 		return *this;
 	}
 
-	float Vec2::operator [] (unsigned int idx)
+	float Vec2::operator [] (uint idx)
 	{
 		return (&x)[idx];
 	}
@@ -179,7 +179,7 @@ namespace stdio_fw
 		return *this;
 	}
 
-	float Vec3::operator [] (unsigned int idx)
+	float Vec3::operator [] (uint idx)
 	{
 		return (&x)[idx];
 	}
