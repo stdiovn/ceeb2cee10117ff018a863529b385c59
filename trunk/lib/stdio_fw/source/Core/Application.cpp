@@ -75,8 +75,9 @@ namespace stdio_fw
 	void Application::Run()
 	{
 		DWORD lastTime = GetTickCount();
+		m_isRunning = true;
 
-		while (!glfwWindowShouldClose(m_pWindow))
+		while (!glfwWindowShouldClose(m_pWindow) && m_isRunning == true)
 		{
 			DWORD curTime = GetTickCount();
 			float deltaTime = static_cast<float>(curTime - lastTime);
