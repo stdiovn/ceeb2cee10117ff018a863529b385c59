@@ -10,8 +10,7 @@ namespace stdio_fw
 {
 	class Application
 	{
-		GLFWwindow*			m_pWindow;
-		bool				m_isRunning;
+		GLFWwindow*			m_pWindow;		
 		Graphics*			m_pGraphics;
 
 		char				m_sWindowTitle[64];
@@ -40,5 +39,8 @@ namespace stdio_fw
 		Graphics*			getGraphics();
 
 		void				Run();
+
+	protected:
+		bool				m_isRunning;
 	};
 }

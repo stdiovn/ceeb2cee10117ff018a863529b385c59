@@ -146,11 +146,9 @@ namespace stdio_fw
 		float uv[]
 		{
 			X2UVGL(src_x, img->getWidth()), Y2UVGL(src_y, img->getHeight()),
+			X2UVGL(src_x + src_w, img->getWidth()), Y2UVGL(src_y, img->getHeight()),
 			X2UVGL(src_x, img->getWidth()), Y2UVGL(src_y + src_h, img->getHeight()),
-			X2UVGL(src_x + src_w, img->getWidth()), Y2UVGL(src_y + src_h, img->getHeight()),
-			X2UVGL(src_x, img->getWidth()), Y2UVGL(src_y, img->getHeight()),
-			X2UVGL(src_x + src_w, img->getWidth()), Y2UVGL(src_y + src_h, img->getHeight()),
-			X2UVGL(src_x + src_w, img->getWidth()), Y2UVGL(src_y, img->getHeight())
+			X2UVGL(src_x + src_w, img->getWidth()), Y2UVGL(src_y + src_h, img->getHeight())
 		};
 		draw(x, y, width, height, uv, img->m_texID, flipping);
 	}
@@ -252,24 +250,23 @@ namespace stdio_fw
 
 			// Compute vertices array
 			float vertices[] = {
-				XSCREEN2GL(px, m_iScreenW),		YSCREEN2GL(py, m_iScreenH),
+				XSCREEN2GL(px, m_iScreenW), YSCREEN2GL(py, m_iScreenH),
 				XSCREEN2GL(px + w, m_iScreenW), YSCREEN2GL(py, m_iScreenH),
-				XSCREEN2GL(px, m_iScreenW),		YSCREEN2GL(py + h, m_iScreenH),
+				XSCREEN2GL(px, m_iScreenW), YSCREEN2GL(py + h, m_iScreenH),
 				XSCREEN2GL(px + w, m_iScreenW), YSCREEN2GL(py + h, m_iScreenH)
 			};
 
 			// Transfer data to verties
-			GLint posLoc = m_cachedLocs[CACHED_LOC::ATT_POSITION2];			
+			GLint posLoc = m_cachedLocs[CACHED_LOC::ATT_POSITION2];
 			glVertexAttribPointer(posLoc, 2, GL_FLOAT, GL_FALSE, 0, vertices);
-			glEnableVertexAttribArray(posLoc);			
+			glEnableVertexAttribArray(posLoc);
 
 			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
 			x += (gs->advance.x >> 6) * scale_x;
 			y += (gs->advance.y >> 6) * scale_y;
 		}
-
-		glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+		
 		glUseProgram(0);
 		glDisable(GL_BLEND);
 	}
@@ -309,11 +306,9 @@ namespace stdio_fw
 		// Compute vertices array
 		float vertices[] = {
 			XSCREEN2GL(v1.x, m_iScreenW), YSCREEN2GL(v1.y, m_iScreenH),
+			XSCREEN2GL(v2.x, m_iScreenW), YSCREEN2GL(v2.y, m_iScreenH),
 			XSCREEN2GL(v3.x, m_iScreenW), YSCREEN2GL(v3.y, m_iScreenH),
-			XSCREEN2GL(v4.x, m_iScreenW), YSCREEN2GL(v4.y, m_iScreenH),
-			XSCREEN2GL(v1.x, m_iScreenW), YSCREEN2GL(v1.y, m_iScreenH),
-			XSCREEN2GL(v4.x, m_iScreenW), YSCREEN2GL(v4.y, m_iScreenH),
-			XSCREEN2GL(v2.x, m_iScreenW), YSCREEN2GL(v2.y, m_iScreenH)
+			XSCREEN2GL(v4.x, m_iScreenW), YSCREEN2GL(v4.y, m_iScreenH),			
 		};
 
 		// Transfer data to verties
@@ -341,11 +336,9 @@ namespace stdio_fw
 			GLint uvLoc = m_cachedLocs[CACHED_LOC::ATT_TEXCOORD1];			
 			float default_uv[] = {
 				0.0f, 1.0f,
+				1.0f, 1.0f,
 				0.0f, 0.0f,
-				1.0f, 0.0f,
-				0.0f, 1.0f,
-				1.0f, 0.0f,
-				1.0f, 1.0f
+				1.0f, 0.0f
 			};
 
 			if (uv == nullptr)
@@ -364,7 +357,7 @@ namespace stdio_fw
 			glEnableVertexAttribArray(uvLoc);			
 		}	
 		
-		glDrawArrays(GL_TRIANGLES, 0, 6);
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
 		// Disable blend
 		glDisable(GL_BLEND);
