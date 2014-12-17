@@ -36,7 +36,7 @@ namespace stdio_fw
 	class Graphics
 	{
 		// We use 2 program: 0 for SOLID OBJECT and 1 for IMAGE
-		unsigned int		m_aPrograms[TOTAL_PRG];
+		uint		m_aPrograms[TOTAL_PRG];
 
 		// Cache attribute and uniforms location here
 		int					m_cachedLocs[TOTAL_LOC];
@@ -67,19 +67,19 @@ namespace stdio_fw
 		void				drawLine(int x1, int y1, int x2, int y2);
 		void				drawLine(Vec2 p1, Vec2 p2);
 
-		void				drawImage(Image* img, int x, int y, unsigned int flipping = 0);
-		void				drawImage(Image* img, Rect rect, unsigned int flipping = 0);
+		void				drawImage(Image* img, int x, int y, uint flipping = 0);
+		void				drawImage(Image* img, Rect rect, uint flipping = 0);
 
-		void				drawRegion(Image* img, int x, int y, int width, int height, int src_x, int src_y, int src_w, int src_h, unsigned int flipping = 0);
-		void				drawRegion(Image* img, Rect src, Rect dest, unsigned int flipping = 0);
+		void				drawRegion(Image* img, int x, int y, int width, int height, int src_x, int src_y, int src_w, int src_h, uint flipping = 0);
+		void				drawRegion(Image* img, Rect src, Rect dest, uint flipping = 0);
 
 		void				drawText(const char* text, int x, int y, int scale_x = 1, int scale_y = 1);
 
 		// Set color function: 0xRRGGBBAA
-		void				setColor(unsigned int color);
+		void				setColor(uint color);
 		void				setColor(int red, int green, int blue, int alpha);
 		
-		void				setClearColor(unsigned int color);
+		void				setClearColor(uint color);
 		void				setClearColor(int red, int green, int blue, int alpha);
 
 		void				cleanScreen();	
@@ -96,6 +96,6 @@ namespace stdio_fw
 		int					getClientHeight();
 
 	private:
-		void				draw(int x, int y, int width, int height, float *uv = nullptr, unsigned int texture_id = 0, unsigned int flipping = 0);
+		void				draw(int x, int y, int width, int height, float *uv = nullptr, uint texture_id = 0, uint flipping = 0);
 	};
 }

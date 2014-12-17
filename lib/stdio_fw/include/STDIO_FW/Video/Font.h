@@ -25,7 +25,7 @@ namespace stdio_fw
 		static FT_Library		m_sFTlib;
 
 		// Texture slot for font rendering
-		static unsigned int		m_texID;
+		static uint		m_texID;
 		
 	public:
 		static ErrorCode initFontLib();		

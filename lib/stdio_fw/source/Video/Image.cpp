@@ -7,7 +7,11 @@
 
 namespace stdio_fw
 {
-	Image::Image(const char* path) :m_imgWidth(0), m_imgHeight(0), m_texID(0), m_isLoaded(false)
+	Image::Image(const char* path, bool useMipmap) :m_imgWidth(0),
+													m_imgHeight(0),
+													m_texID(0),
+													m_isLoaded(false),
+													m_useMipmap(useMipmap)
 	{
 		strcpy_s(m_imgPath, path);
 	}
@@ -23,7 +27,8 @@ namespace stdio_fw
 			return ErrorCode::ERR_NO_ERROR;
 
 		// Load image data
-		unsigned char* data = loadImageData();
+		uint width, height;
+		byte* data = loadImageData(width, height);
 
 		if (data == NULL)
 			return ErrorCode::ERR_CANT_OPEN_FILE;
@@ -32,10 +37,18 @@ namespace stdio_fw
 		glGenTextures(1, &m_texID);
 		glBindTexture(GL_TEXTURE_2D, m_texID);
 
-		GLuint format = m_imgBPP == 3 ? GL_RGB : GL_RGBA;
-		glTexImage2D(GL_TEXTURE_2D, 0, format, m_imgWidth, m_imgHeight, 0, format, GL_UNSIGNED_BYTE, data);
+		GLuint internalFormat = m_imgBPP == 3 ? GL_RGB : GL_RGBA;
+		GLuint format = m_imgBPP == 3 ? GL_BGR : GL_BGRA;
+		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, data);
 		
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		if (m_useMipmap)
+		{
+			glGenerateMipmap(GL_TEXTURE_2D);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		}
+		else
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);			
+		
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
@@ -44,48 +57,62 @@ namespace stdio_fw
 		glBindTexture(GL_TEXTURE_2D, 0);
 		m_isLoaded = true;
 
-		// Clean up
 		SAFE_DEL_ARR(data);
 
 		return ErrorCode::ERR_NO_ERROR;
 	}
 
-	unsigned char* Image::loadImageData()
-	{
-		//Automatocally detects the format(from over 20 formats!)
+	byte* Image::loadImageData(uint &pow2w, uint &pow2h)
+	{		
 		FREE_IMAGE_FORMAT img_format = FreeImage_GetFileType(m_imgPath, 0);
 		FIBITMAP* img_bm = FreeImage_Load(img_format, m_imgPath);
 
 		if (img_bm == NULL)
 			return NULL;
 
-		int img_w = FreeImage_GetWidth(img_bm);
-		int img_h = FreeImage_GetHeight(img_bm);
-		int img_bpp = FreeImage_GetBPP(img_bm) / 8;
+		m_imgWidth = FreeImage_GetWidth(img_bm);
+		m_imgHeight = FreeImage_GetHeight(img_bm);
+		m_imgBPP = FreeImage_GetBPP(img_bm) / 8;
+		
+		pow2w = roundUpPow2(m_imgWidth);
+		pow2h = roundUpPow2(m_imgHeight);
 
-		unsigned char* img_data = new unsigned char[img_bpp * img_w * img_h];
-		char* pixeles = reinterpret_cast<char*>(FreeImage_GetBits(img_bm));
-
-		//FreeImage loads in BGR format, so you need to swap some bytes => RGBA.
-		for (int j = 0; j < img_w * img_h; j++){
-			img_data[j * img_bpp + 0] = pixeles[j * img_bpp + 2];
-			img_data[j * img_bpp + 1] = pixeles[j * img_bpp + 1];
-			img_data[j * img_bpp + 2] = pixeles[j * img_bpp + 0];
-
-			if (img_bpp == 4)
-				img_data[j * img_bpp + 3] = pixeles[j * img_bpp + 3];
+		byte *data, *pixels;
+		FIBITMAP* img_rescaled = NULL;
+		if (m_imgWidth == pow2w && m_imgHeight == pow2h)
+		{
+			pixels = FreeImage_GetBits(img_bm);			
+		}
+		else
+		{
+			img_rescaled = FreeImage_Rescale(img_bm, pow2w, pow2h);
+			pixels = FreeImage_GetBits(img_rescaled);			
 		}
 
-		m_imgWidth = img_w;
-		m_imgHeight = img_h;
-		m_imgBPP = img_bpp;
+		uint img_sz = pow2w * pow2h * m_imgBPP;
+		data = new byte[img_sz];
+		memcpy(data, pixels, img_sz);
 
-		return img_data;
+		// Clean up
+		FreeImage_Unload(img_bm);
+		if (img_rescaled)
+			FreeImage_Unload(img_rescaled);
+		
+
+		return data;
 	}
 
 	void Image::unloadImage()
 	{
 		glDeleteTextures(1, &m_texID);
 		m_isLoaded = false;
+	}
+
+	uint Image::roundUpPow2(uint n)
+	{
+		uint x = 1;
+		while (x < n) x <<= 1;
+
+		return x;
 	}
 }

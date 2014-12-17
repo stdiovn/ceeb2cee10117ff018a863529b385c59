@@ -131,17 +131,17 @@ namespace stdio_fw
 		drawRect(rect.x, rect.y, rect.width, rect.height, weight);
 	}
 
-	void Graphics::drawImage(Image* img, int x, int y, unsigned int flipping)
+	void Graphics::drawImage(Image* img, int x, int y, uint flipping)
 	{
 		draw(x, y, img->getWidth(), img->getHeight(), nullptr, img->m_texID, flipping);
 	}
 
-	void Graphics::drawImage(Image* img, Rect rect, unsigned int flipping)
+	void Graphics::drawImage(Image* img, Rect rect, uint flipping)
 	{
 		draw(rect.x, rect.y, rect.width, rect.height, nullptr, img->m_texID, flipping);
 	}
 
-	void Graphics::drawRegion(Image* img, int x, int y, int width, int height, int src_x, int src_y, int src_w, int src_h, unsigned int flipping)
+	void Graphics::drawRegion(Image* img, int x, int y, int width, int height, int src_x, int src_y, int src_w, int src_h, uint flipping)
 	{
 		float uv[]
 		{
@@ -155,7 +155,7 @@ namespace stdio_fw
 		draw(x, y, width, height, uv, img->m_texID, flipping);
 	}
 
-	void Graphics::drawRegion(Image* img, Rect src, Rect dest, unsigned int flipping)
+	void Graphics::drawRegion(Image* img, Rect src, Rect dest, uint flipping)
 	{
 		drawRegion(img, src.x, src.y, src.width, src.height, dest.x, dest.y, dest.width, dest.height, flipping);
 	}
@@ -274,7 +274,7 @@ namespace stdio_fw
 		glDisable(GL_BLEND);
 	}
 
-	void Graphics::draw(int x, int y, int width, int height, float *uv, unsigned int texture_id, unsigned int flipping)
+	void Graphics::draw(int x, int y, int width, int height, float *uv, uint texture_id, uint flipping)
 	{
 		//enable blend
 		glEnable(GL_BLEND);
@@ -372,7 +372,7 @@ namespace stdio_fw
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
-	void Graphics::setColor(unsigned int color)
+	void Graphics::setColor(uint color)
 	{
 		// [0000 0000] [0000 0000] [0000 0000] [0000 0000]
 		m_drawColor[0] = ((color >> 24) & 0xFF) / 255.0f;
@@ -389,7 +389,7 @@ namespace stdio_fw
 		m_drawColor[3] = alpha / 255.0f;
 	}
 
-	void Graphics::setClearColor(unsigned int color)
+	void Graphics::setClearColor(uint color)
 	{
 		// [0000 0000] [0000 0000] [0000 0000] [0000 0000]
 		m_clearColor[0] = ((color >> 24) & 0xFF) / 255.0f;

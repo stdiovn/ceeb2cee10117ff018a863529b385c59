@@ -5,26 +5,28 @@ namespace stdio_fw
 	class Image
 	{
 		friend class Graphics;
-		char				m_imgPath[256];
-		unsigned int		m_texID;
+		char		m_imgPath[256];
+		uint		m_texID;
 
-		unsigned int		m_imgWidth;
-		unsigned int		m_imgHeight;
-		unsigned int		m_imgBPP;
+		uint		m_imgWidth;
+		uint		m_imgHeight;
+		uint		m_imgBPP;
 
-		bool				m_isLoaded;
+		bool		m_isLoaded;
+		bool		m_useMipmap;
 
 	public:
-		Image(const char* path);
+		Image(const char* path, bool useMipmap = false);
 		~Image();
 
 		ErrorCode			loadImage();
 		void				unloadImage();
 
-		unsigned int		getWidth() { return m_imgWidth; };
-		unsigned int		getHeight() { return m_imgHeight; };
+		uint		getWidth() { return m_imgWidth; };
+		uint		getHeight() { return m_imgHeight; };
 
 	private:
-		unsigned char*		loadImageData();
+		byte*		loadImageData(uint &pow2w, uint &pow2h);
+		uint		roundUpPow2(uint n);
 	};
 }
