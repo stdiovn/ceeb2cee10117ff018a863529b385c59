@@ -7,9 +7,10 @@
 
 namespace stdio_fw
 {
-	Application::Application() :m_pWindow(NULL), m_isRunning(false)
+	Application* Application::m_pApp = nullptr;
+	Application::Application() :m_pWindow(nullptr), m_isRunning(false)
 	{
-
+		m_pApp = this;
 	}
 
 	Application::~Application()
@@ -17,7 +18,7 @@ namespace stdio_fw
 		SAFE_DEL(m_pGraphics);
 	}
 
-	ErrorCode Application::Init(int screenW, int screenH, const char* title)
+	ErrorCode Application::init(int screenW, int screenH, const char* title)
 	{
 		/* Initialize the library */
 		if (!glfwInit())
@@ -44,7 +45,8 @@ namespace stdio_fw
 			glfwTerminate();
 			return ErrorCode::ERR_INVALID_OPERATION;
 		}
-		glfwMakeContextCurrent(m_pWindow);
+		glfwMakeContextCurrent(m_pWindow);		
+		glfwSetKeyCallback(m_pWindow, glfwKeyCallbackFunc);
 
 		/* Initialize GLEW */
 		if (glewInit() != GLEW_OK) {
@@ -72,7 +74,7 @@ namespace stdio_fw
 	}
 
 
-	void Application::Run()
+	void Application::run()
 	{
 		DWORD lastTime = GetTickCount();
 		m_isRunning = true;
@@ -83,8 +85,8 @@ namespace stdio_fw
 			float deltaTime = static_cast<float>(curTime - lastTime);
 			lastTime = curTime;
 
-			Update(deltaTime);
-			Render(m_pGraphics);
+			update(deltaTime);
+			render(m_pGraphics);
 
 			// Set new window title
 			char title[128];
@@ -95,8 +97,13 @@ namespace stdio_fw
 			glfwPollEvents();
 		}
 
-		Exit();
+		exit();
 		glfwTerminate();
+	}
+
+	void Application::glfwKeyCallbackFunc(GLFWwindow* pWindow, int key, int scancode, int action, int mods)
+	{
+		m_pApp->onKeyProc((KeyCode)key, (KeyState)action);
 	}
 }
 

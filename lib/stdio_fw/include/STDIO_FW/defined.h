@@ -18,7 +18,8 @@ namespace stdio_fw
 	enum KeyState
 	{
 		KEY_PRESSED = 1,
-		KEY_RELEASED = 0
+		KEY_RELEASED = 0,
+		KEY_REPEAT = 2
 	};
 
 	enum FlippingFlag {
