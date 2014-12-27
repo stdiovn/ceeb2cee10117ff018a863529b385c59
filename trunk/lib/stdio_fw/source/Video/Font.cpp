@@ -38,6 +38,9 @@ namespace stdio_fw
 		if (FT_New_Face(m_sFTlib, m_fontPath, 0, &m_face))
 			return ErrorCode::ERR_CANT_LOAD_FONT;
 		
+		// set font default size
+		FT_Set_Pixel_Sizes(m_face, 0, 48);
+
 		return ErrorCode::ERR_NO_ERROR;
 	}
 

@@ -211,7 +211,7 @@ namespace stdio_fw
 		glUniform4fv(m_cachedLocs[CACHED_LOC::UNI_COLOR2], 1, &m_drawColor[0]);
 
 		// Transfer uv
-		GLint uvLoc = m_cachedLocs[CACHED_LOC::ATT_TEXCOORD1];
+		GLint uvLoc = m_cachedLocs[CACHED_LOC::ATT_TEXCOORD2];
 		float default_uv[] = {
 			0.0f, 0.0f,
 			1.0f, 0.0f,
