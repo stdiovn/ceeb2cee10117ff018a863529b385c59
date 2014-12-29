@@ -14,6 +14,7 @@
 #include "types.h"
 
 #include "Utils\stdio_math.h"
+#include "Utils\AffineTransform.h"
 #include "Core\Application.h"
 #include "Video\Graphics.h"
 #include "Video\Image.h"

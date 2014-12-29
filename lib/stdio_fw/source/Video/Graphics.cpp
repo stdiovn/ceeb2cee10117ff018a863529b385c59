@@ -10,13 +10,11 @@ namespace stdio_fw
 	GLuint loadShader(GLenum type, const char* src);
 
 	Graphics::Graphics() :m_curFont(nullptr)
-	{
-
+	{	
 	}
 
 	Graphics::~Graphics()
 	{
-
 	}
 
 	ErrorCode Graphics::initGraphics(int screenW, int screenH)
@@ -286,22 +284,12 @@ namespace stdio_fw
 		Vec3 v2(x + width, y, 1.0f);
 		Vec3 v3(x, y + height, 1.0f);
 		Vec3 v4(x + width, y + height, 1.0f);
-		if (m_listMat.empty() == false)
-		{
-			Mat3 finalMat;
-			finalMat.SetIdentity();
-
-			while (m_listMat.size() > 0)
-			{
-				finalMat = finalMat * m_listMat.front();
-				m_listMat.pop_front();
-			}
-
-			v1 = v1 * finalMat;
-			v2 = v2 * finalMat;
-			v3 = v3 * finalMat;
-			v4 = v4 * finalMat;
-		}
+		
+		const Mat3& tranform_mat = m_affineTransform.getMatrix();
+		v1 = v1 * tranform_mat;
+		v2 = v2 * tranform_mat;
+		v3 = v3 * tranform_mat;
+		v4 = v4 * tranform_mat;		
 
 		// Compute vertices array
 		float vertices[] = {
@@ -405,16 +393,6 @@ namespace stdio_fw
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	}
 
-	void Graphics::pushMatrix(Mat3 mat)
-	{
-		m_listMat.push_back(mat);
-	}
-
-	void Graphics::popMatrix()
-	{
-		m_listMat.clear();
-	}
-
 	void Graphics::setFont(Font* font)
 	{
 		if (font)
@@ -429,6 +407,36 @@ namespace stdio_fw
 	int Graphics::getClientHeight()
 	{
 		return m_iScreenH;
+	}
+
+	void Graphics::rotate(float alpha)
+	{
+		m_affineTransform.rotate(alpha);
+	}
+
+	void Graphics::rotate(float alpha, int x, int y)
+	{
+		m_affineTransform.rotate(alpha, x, y);
+	}
+
+	void Graphics::translate(int x, int y)
+	{
+		m_affineTransform.translate(x, y);
+	}
+
+	void Graphics::scale(float sx, float sy)
+	{
+		m_affineTransform.scale(sx, sy);
+	}
+
+	void Graphics::setTransform(const AffineTransform& transform)
+	{
+		m_affineTransform = transform;
+	}
+
+	AffineTransform& Graphics::getTransform()
+	{
+		return m_affineTransform;
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////

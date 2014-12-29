@@ -4,14 +4,14 @@
 namespace stdio_fw
 {
 	//Vector 2
-	float Vec2::Length()
+	float Vec2::length()
 	{
 		return sqrt(x*x + y*y);
 	}
 
-	Vec2 & Vec2::Normalize()
+	Vec2 & Vec2::normalize()
 	{
-		float lenInv = 1.0f / Length();
+		float lenInv = 1.0f / length();
 		x *= lenInv;
 		y *= lenInv;
 
@@ -86,25 +86,25 @@ namespace stdio_fw
 		return (&x)[idx];
 	}
 
-	Vec2 Vec2::Modulate(const Vec2 & Vec)
+	Vec2 Vec2::modulate(const Vec2 & Vec)
 	{
 		return Vec2(x * Vec.x, y * Vec.y);
 	}
 
-	float Vec2::Dot(const Vec2 & Vec)
+	float Vec2::dot(const Vec2 & Vec)
 	{
 		return x * Vec.x + y * Vec.y;
 	}
 
 	// Vector3
-	float Vec3::Length()
+	float Vec3::length()
 	{
 		return sqrt(x*x + y*y + z*z);
 	}
 
-	Vec3 & Vec3::Normalize()
+	Vec3 & Vec3::normalize()
 	{
-		float lenInv = 1.0f / Length();
+		float lenInv = 1.0f / length();
 		x *= lenInv;
 		y *= lenInv;
 		z *= lenInv;
@@ -184,17 +184,17 @@ namespace stdio_fw
 		return (&x)[idx];
 	}
 
-	Vec3 Vec3::Modulate(const Vec3 & Vec)
+	Vec3 Vec3::modulate(const Vec3 & Vec)
 	{
 		return Vec3(x * Vec.x, y * Vec.y, z * Vec.z);
 	}
 
-	float Vec3::Dot(const Vec3 & Vec)
+	float Vec3::dot(const Vec3 & Vec)
 	{
 		return x * Vec.x + y * Vec.y + z * Vec.z;
 	}
 
-	Vec3 Vec3::Cross(const Vec3 & Vec)
+	Vec3 Vec3::cross(const Vec3 & Vec)
 	{
 		return Vec3(y * Vec.z - z * Vec.y, z * Vec.x - x * Vec.z, x * Vec.y - y * Vec.x);
 	}
@@ -230,7 +230,7 @@ namespace stdio_fw
 		m[2][0] = mat.m[2][0]; m[2][1] = mat.m[2][1]; m[2][2] = mat.m[2][2];		
 	}
 
-	Mat3 & Mat3::SetZero()
+	Mat3 & Mat3::setZero()
 	{
 		m[0][0] = 0.0f; m[0][1] = 0.0f; m[0][2] = 0.0f;
 		m[1][0] = 0.0f; m[1][1] = 0.0f; m[1][2] = 0.0f;
@@ -239,7 +239,7 @@ namespace stdio_fw
 		return *this;
 	}
 
-	Mat3 & Mat3::SetIdentity()
+	Mat3 & Mat3::setIdentity()
 	{
 		m[0][0] = 1.0f; m[0][1] = 0.0f; m[0][2] = 0.0f;
 		m[1][0] = 0.0f; m[1][1] = 1.0f; m[1][2] = 0.0f;
@@ -248,7 +248,7 @@ namespace stdio_fw
 		return *this;
 	}
 
-	Mat3 & Mat3::SetRotation(float angle)
+	Mat3 & Mat3::setRotation(float angle)
 	{
 		float s = sinf(angle);
 		float c = cosf(angle);
@@ -259,7 +259,7 @@ namespace stdio_fw
 		return *this;
 	}
 
-	Mat3 & Mat3::SetScale(float scale)
+	Mat3 & Mat3::setScale(float scale)
 	{
 		m[0][0] = scale; m[0][1] = 0.0f;  m[0][2] = 0.0f;
 		m[1][0] = 0.0f;  m[1][1] = scale; m[1][2] = 0.0f;
@@ -268,7 +268,7 @@ namespace stdio_fw
 		return *this;
 	}
 
-	Mat3 & Mat3::SetScale(float scaleX, float scaleY)
+	Mat3 & Mat3::setScale(float scaleX, float scaleY)
 	{
 		m[0][0] = scaleX; m[0][1] = 0.0f;   m[0][2] = 0.0f;
 		m[1][0] = 0.0f;   m[1][1] = scaleY; m[1][2] = 0.0f;
@@ -277,7 +277,7 @@ namespace stdio_fw
 		return *this;
 	}
 
-	Mat3 & Mat3::SetScale(float * pScale)
+	Mat3 & Mat3::setScale(float * pScale)
 	{
 		m[0][0] = pScale[0];   m[0][1] = 0.0f;        m[0][2] = 0.0f; 
 		m[1][0] = 0.0f;        m[1][1] = pScale[1];   m[1][2] = 0.0f; 
@@ -286,7 +286,7 @@ namespace stdio_fw
 		return *this;
 	}
 
-	Mat3 & Mat3::SetScale(const Vec2 & scaleVec)
+	Mat3 & Mat3::setScale(const Vec2 & scaleVec)
 	{
 		m[0][0] = scaleVec.x; m[0][1] = 0.0f;       m[0][2] = 0.0f;
 		m[1][0] = 0.0f;       m[1][1] = scaleVec.y; m[1][2] = 0.0f;
@@ -295,7 +295,7 @@ namespace stdio_fw
 		return *this;
 	}
 
-	Mat3 & Mat3::SetTranslation(float x, float y)
+	Mat3 & Mat3::setTranslation(float x, float y)
 	{
 		m[0][0] = 1.0f; m[0][1] = 0.0f; m[0][2] = 0.0f;
 		m[1][0] = 0.0f; m[1][1] = 1.0f; m[1][2] = 0.0f;		
@@ -304,7 +304,7 @@ namespace stdio_fw
 		return *this;
 	}
 
-	Mat3 & Mat3::SetTranslation(float *pTrans)
+	Mat3 & Mat3::setTranslation(float *pTrans)
 	{
 		m[0][0] = 1.0f;			m[0][1] = 0.0f;			m[0][2] = 0.0f;
 		m[1][0] = 0.0f;			m[1][1] = 1.0f;			m[1][2] = 0.0f;
@@ -313,7 +313,7 @@ namespace stdio_fw
 		return *this;
 	}
 
-	Mat3 & Mat3::SetTranslation(const Vec2 &vec)
+	Mat3 & Mat3::setTranslation(const Vec2 &vec)
 	{
 		m[0][0] = 1.0f;		m[0][1] = 0.0f;		m[0][2] = 0.0f;
 		m[1][0] = 0.0f;		m[1][1] = 1.0f;		m[1][2] = 0.0f;
@@ -322,7 +322,7 @@ namespace stdio_fw
 		return *this;
 	}
 
-	Mat3 Mat3::Transpose()
+	Mat3 Mat3::transpose()
 	{
 		Mat3 res;
 		res.m[0][0] = m[0][0]; res.m[0][1] = m[1][0]; res.m[0][2] = m[2][0];

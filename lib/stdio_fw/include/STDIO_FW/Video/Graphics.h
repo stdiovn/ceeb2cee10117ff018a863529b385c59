@@ -41,16 +41,15 @@ namespace stdio_fw
 		// Cache attribute and uniforms location here
 		int					m_cachedLocs[TOTAL_LOC];
 
-
 		float				m_drawColor[4];
 		float				m_clearColor[4];
 
 		int					m_iScreenW;
-		int					m_iScreenH;
+		int					m_iScreenH;		
 
-		std::list<Mat3>		m_listMat;
+		Font*				m_curFont;		
+		AffineTransform		m_affineTransform;
 
-		Font*				m_curFont;
 	public:
 		Graphics();
 		~Graphics();
@@ -82,11 +81,7 @@ namespace stdio_fw
 		void				setClearColor(uint color);
 		void				setClearColor(int red, int green, int blue, int alpha);
 
-		void				cleanScreen();	
-
-		// Push and pop matrix
-		void				pushMatrix(Mat3 mat);
-		void				popMatrix();
+		void				cleanScreen();
 
 		// Set font
 		void				setFont(Font* font);
@@ -94,6 +89,15 @@ namespace stdio_fw
 		// Get client width and height
 		int					getClientWidth();
 		int					getClientHeight();
+
+		// Set transform info
+		void				rotate(float alpha);
+		void				rotate(float alpha, int x, int y);
+		void				translate(int x, int y);
+		void				scale(float sx, float sy);
+
+		void				setTransform(const AffineTransform& transform);
+		AffineTransform&	getTransform();
 
 	private:
 		void				draw(int x, int y, int width, int height, float *uv = nullptr, uint texture_id = 0, uint flipping = 0);
