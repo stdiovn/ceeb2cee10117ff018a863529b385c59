@@ -55,6 +55,7 @@ namespace stdio_fw
 		}
 
 		/* Init graphics system */
+		Font::initFontLib();
 		m_pGraphics = new Graphics();
 		m_pGraphics->initGraphics(screenW, screenH);
 

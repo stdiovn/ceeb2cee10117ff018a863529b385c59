@@ -40,9 +40,9 @@ namespace stdio_fw
 	void AffineTransform::rotate(float alpha, int anchorX, int anchorY)
 	{
 		Mat3 mT1, mT2, mR;
-		mT1.setTranslation(-anchorX, -anchorY);
+		mT1.setTranslation(-(anchorX - m_tX), -(anchorY - m_tY));
 		mR.setRotation(alpha);
-		mT2.setTranslation(anchorX, anchorY);
+		mT2.setTranslation(anchorX - m_tX, anchorY - m_tY);
 
 		m_matR = mT1 * mR * mT2;
 		updateTransformMatrix();
