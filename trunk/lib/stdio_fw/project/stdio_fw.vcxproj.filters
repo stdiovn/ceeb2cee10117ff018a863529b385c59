@@ -31,6 +31,9 @@
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="..\include\STDIO_FW\types.h" />
+    <ClInclude Include="..\include\STDIO_FW\Utils\AffineTransform.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\Core\Application.cpp">
@@ -47,6 +50,9 @@
       <Filter>Video</Filter>
     </ClCompile>
     <ClCompile Include="..\source\Utils\stdio_math.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\Utils\AffineTransform.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
   </ItemGroup>

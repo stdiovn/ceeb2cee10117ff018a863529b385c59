@@ -75,6 +75,7 @@
     <ClInclude Include="..\include\STDIO_FW\stdio_fw.h" />
     <ClInclude Include="..\include\STDIO_FW\macros.h" />
     <ClInclude Include="..\include\STDIO_FW\types.h" />
+    <ClInclude Include="..\include\STDIO_FW\Utils\AffineTransform.h" />
     <ClInclude Include="..\include\STDIO_FW\Utils\stdio_math.h" />
     <ClInclude Include="..\include\STDIO_FW\Video\Font.h" />
     <ClInclude Include="..\include\STDIO_FW\Video\Graphics.h" />
@@ -86,6 +87,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">stdio_fw.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="..\source\Utils\AffineTransform.cpp" />
     <ClCompile Include="..\source\Utils\stdio_math.cpp" />
     <ClCompile Include="..\source\Video\Font.cpp" />
     <ClCompile Include="..\source\Video\Graphics.cpp" />

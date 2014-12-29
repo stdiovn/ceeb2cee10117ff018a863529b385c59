@@ -11,8 +11,8 @@ namespace stdio_fw
 		Vec2(const Vec2 & Vec) : x(Vec.x), y(Vec.y) {}
 
 		//Vector's operations
-		float Length();
-		Vec2 & Normalize();
+		float length();
+		Vec2 & normalize();
 		Vec2 operator + (const Vec2 & Vec);
 		Vec2 & operator += (const Vec2 & Vec);
 		Vec2 operator - ();
@@ -23,8 +23,8 @@ namespace stdio_fw
 		Vec2 operator / (float k);
 		Vec2 & operator /= (float k);
 		Vec2 & operator = (const Vec2 & Vec);
-		Vec2 Modulate(const Vec2 & Vec);
-		float Dot(const Vec2 & Vec);
+		Vec2 modulate(const Vec2 & Vec);
+		float dot(const Vec2 & Vec);
 
 		//access to elements
 		float operator [] (uint idx);
@@ -44,8 +44,8 @@ namespace stdio_fw
 		Vec3(const Vec3 & Vec) : x(Vec.x), y(Vec.y), z(Vec.z) {}
 
 		//Vector's operations
-		float Length();
-		Vec3 & Normalize();
+		float length();
+		Vec3 & normalize();
 		Vec3 operator + (const Vec3 & Vec);
 		Vec3 & operator += (const Vec3 & Vec);
 		Vec3 operator - ();
@@ -56,9 +56,9 @@ namespace stdio_fw
 		Vec3 operator / (float k);
 		Vec3 & operator /= (float k);
 		Vec3 & operator = (const Vec3 & Vec);
-		Vec3 Modulate(const Vec3 & Vec);
-		float Dot(const Vec3 & Vec);
-		Vec3 Cross(const Vec3 & Vec);
+		Vec3 modulate(const Vec3 & Vec);
+		float dot(const Vec3 & Vec);
+		Vec3 cross(const Vec3 & Vec);
 
 		// access to elements
 		float operator [] (uint idx);
@@ -80,21 +80,21 @@ namespace stdio_fw
 		Mat3(const Mat3 & mat);
 
 		// Mat3 operations
-		Mat3 & SetZero();
-		Mat3 & SetIdentity();
+		Mat3 & setZero();
+		Mat3 & setIdentity();
 
-		Mat3 & SetRotation(float angle);		
+		Mat3 & setRotation(float angle);		
 
-		Mat3 & SetScale(float scale);
-		Mat3 & SetScale(float scaleX, float scaleY);
-		Mat3 & SetScale(float * pScale);
-		Mat3 & SetScale(const Vec2 &scaleVec);
+		Mat3 & setScale(float scale);
+		Mat3 & setScale(float scaleX, float scaleY);
+		Mat3 & setScale(float * pScale);
+		Mat3 & setScale(const Vec2 &scaleVec);
 
-		Mat3 & SetTranslation(float x, float y);
-		Mat3 & SetTranslation(float *pTrans);
-		Mat3 & SetTranslation(const Vec2 &vec);
+		Mat3 & setTranslation(float x, float y);
+		Mat3 & setTranslation(float *pTrans);
+		Mat3 & setTranslation(const Vec2 &vec);
 
-		Mat3 Transpose();
+		Mat3 transpose();
 
 		Mat3 operator + (const Mat3 & mat);
 		Mat3 & operator += (const Mat3 & mat);
