@@ -7,11 +7,17 @@
 
 namespace stdio_fw
 {
-	Image::Image(const char* path, bool useMipmap) :m_imgWidth(0),
-													m_imgHeight(0),
-													m_texID(0),
-													m_isLoaded(false),
-													m_useMipmap(useMipmap)
+	Image::Image(const char* path, 
+				IMAGE_FILTER_MODE minFilter,
+				IMAGE_FILTER_MODE magFilter,
+				bool useMipmap) :
+		m_imgWidth(0),
+		m_imgHeight(0),
+		m_texID(0),
+		m_isLoaded(false),
+		m_minFilterMode(minFilter),
+		m_magFilterMode(magFilter),
+		m_useMipmap(useMipmap)
 	{
 		strcpy_s(m_imgPath, path);
 	}
@@ -44,12 +50,12 @@ namespace stdio_fw
 		if (m_useMipmap)
 		{
 			glGenerateMipmap(GL_TEXTURE_2D);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_minFilterMode);
 		}
 		else
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);			
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_minFilterMode);
 		
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_magFilterMode);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
@@ -85,7 +91,7 @@ namespace stdio_fw
 		}
 		else
 		{
-			img_rescaled = FreeImage_Rescale(img_bm, pow2w, pow2h);
+			img_rescaled = FreeImage_Rescale(img_bm, pow2w, pow2h, FILTER_BOX);
 			pixels = FreeImage_GetBits(img_rescaled);			
 		}
 
