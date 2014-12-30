@@ -332,13 +332,18 @@ namespace stdio_fw
 			if (uv == nullptr)
 				uv = default_uv;
 
-			for (int i = 0; i < 12; i += 2)
+			if (flipping & FLIP_Y)
 			{
-				if (flipping & FLIP_X)
-					uv[i] -= 1.0f;
+				float t1 = uv[0], t2 = uv[2];
+				uv[0] = uv[4] = -t2;
+				uv[2] = uv[6] = -t1;
+			}
 
-				if (flipping & FLIP_Y)
-					uv[i + 1] -= 1.0f;
+			if (flipping & FLIP_X)
+			{
+				float t1 = uv[1], t2 = uv[5];
+				uv[1] = uv[3] = -t2;				
+				uv[5] = uv[7] = -t1;				 
 			}
 
 			glVertexAttribPointer(uvLoc, 2, GL_FLOAT, GL_FALSE, 0, uv);
